@@ -81,7 +81,7 @@ table population
 		mode: import
 		source =
 				let
-				  Source = Excel.Workbook(File.Contents("C:\Users\emira\Projects\GitHub-Projects\latin-america-population-analysis\data\population_latin_america.xlsx"), null, true),
+				  Source = Excel.Workbook(File.Contents("C:\Users\emira\Projects\GitHub-Projects\LatamPopulationTrends\data\population_latin_america.xlsx"), null, true),
 				  Data_Sheet = Source{[Item = "Data", Kind = "Sheet"]}[Data],
 				  #"Promoted headers" = Table.PromoteHeaders(Data_Sheet, [PromoteAllScalars = true]),
 				  #"Removed other columns" = Table.SelectColumns(#"Promoted headers", {"Country Name", "Country Code", "2010 [YR2010]", "2011 [YR2011]", "2012 [YR2012]", "2013 [YR2013]", "2014 [YR2014]", "2015 [YR2015]", "2016 [YR2016]", "2017 [YR2017]", "2018 [YR2018]", "2019 [YR2019]"}),
