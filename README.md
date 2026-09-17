@@ -36,9 +36,29 @@ Regenerates every chart in `plots/` from the source spreadsheet. (`generate_miss
 **Year-over-Year Growth Velocity Heatmap**
 ![YoY Growth Velocity](plots/yoy_growth_velocity.png)
 
+## 🖥️ The Dashboard
+
+`latin_america_population_data.pbip` (open with Power BI Desktop — File →
+Open → the `.pbip` file; it pulls straight from
+`data/population_latin_america.xlsx`). Dark teal/terracotta theme,
+Bahnschrift throughout, one page.
+
+![Latin America Population dashboard](latin_america_population_data.png)
+
+A static export (`latin_america_population_data.png`) lives alongside the
+`.pbip` for anyone without Power BI Desktop.
+
+**KPI strip:** Countries Tracked, Population (Latest), YoY Growth, and
+Growth (2010–2019) — each raw count paired with a rate so the headline
+figure always has comparative context. Below that: a regional population
+trend line, population by country, and growth by country.
+
 ## 📂 Structure
 ```
 data/population_latin_america.xlsx   raw WDI source
 plots/                                generated charts
 analysis.R                            full pipeline: load → tidy → plot
+latin_america_population_data.pbip   Power BI project (open in Desktop)
+latin_america_population_data.Report/       PBIR: pages, visuals as JSON
+latin_america_population_data.SemanticModel/ TMDL: tables, measures
 ```

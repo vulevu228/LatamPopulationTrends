@@ -1,0 +1,97 @@
+table population
+	lineageTag: 6339233c-1c5b-4a6b-a714-8454277b81ee
+
+	measure 'Total Population' = SUM(population[Population])
+		formatString: #,0
+		lineageTag: 7a10001-4000-4a11-9a11-000000000001
+
+	measure 'Population (M)' = DIVIDE([Total Population], 1000000)
+		formatString: #,0.0
+		lineageTag: 7a10001-4000-4a11-9a11-000000000002
+
+	measure 'Population (Latest Year)' = CALCULATE([Total Population], population[Year] = MAX(population[Year]))
+		formatString: #,0
+		lineageTag: 7a10001-4000-4a11-9a11-000000000003
+
+	measure 'Population (2010)' = CALCULATE([Total Population], population[Year] = 2010)
+		formatString: #,0
+		lineageTag: 7a10001-4000-4a11-9a11-000000000004
+
+	measure 'Growth 2010-2019 %' = DIVIDE([Population (Latest Year)] - [Population (2010)], [Population (2010)])
+		formatString: +0.0%;-0.0%;0.0%
+		lineageTag: 7a10001-4000-4a11-9a11-000000000005
+
+	measure 'YoY Growth %' = VAR MaxYr = CALCULATE(MAX(population[Year]), ALLSELECTED(population)) VAR PriorYr = MaxYr - 1 VAR CurrentVal = CALCULATE([Total Population], population[Year] = MaxYr) VAR PriorVal = CALCULATE([Total Population], population[Year] = PriorYr) RETURN DIVIDE(CurrentVal - PriorVal, PriorVal)
+		formatString: +0.0%;-0.0%;0.0%
+		lineageTag: 7a10001-4000-4a11-9a11-000000000006
+
+	measure 'Countries Tracked' = DISTINCTCOUNT(population[Country Code])
+		formatString: #,0
+		lineageTag: 7a10001-4000-4a11-9a11-000000000007
+
+	measure 'Population Rank (Latest Year)' = RANKX(ALLSELECTED(population[Country Name]), [Population (Latest Year)], , DESC, Dense)
+		formatString: #,0
+		lineageTag: 7a10001-4000-4a11-9a11-000000000008
+
+	column 'Country Name'
+		dataType: string
+		lineageTag: cc3472c2-997b-4abd-be4c-c9ae7426b0b0
+		summarizeBy: none
+		sourceColumn: Country Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Country Code'
+		dataType: string
+		lineageTag: 3a2e4c98-4089-4257-8c1d-1742a472e32f
+		summarizeBy: none
+		sourceColumn: Country Code
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: 3b78fee3-8865-4631-b4c4-55f60a8801d3
+		summarizeBy: none
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column Population
+		dataType: int64
+		formatString: #,0
+		lineageTag: 6c4f89f1-cbec-4dcb-9259-e9922ce79971
+		summarizeBy: sum
+		sourceColumn: Population
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Population (Millions)' = DIVIDE(population[Population], 1000000)
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 7a10001-4000-4a11-9a11-000000000009
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition population = m
+		mode: import
+		source =
+				let
+				  Source = Excel.Workbook(File.Contents("C:\Users\emira\Projects\GitHub-Projects\latin-america-population-analysis\data\population_latin_america.xlsx"), null, true),
+				  Data_Sheet = Source{[Item = "Data", Kind = "Sheet"]}[Data],
+				  #"Promoted headers" = Table.PromoteHeaders(Data_Sheet, [PromoteAllScalars = true]),
+				  #"Removed other columns" = Table.SelectColumns(#"Promoted headers", {"Country Name", "Country Code", "2010 [YR2010]", "2011 [YR2011]", "2012 [YR2012]", "2013 [YR2013]", "2014 [YR2014]", "2015 [YR2015]", "2016 [YR2016]", "2017 [YR2017]", "2018 [YR2018]", "2019 [YR2019]"}),
+				  #"Filtered rows" = Table.SelectRows(#"Removed other columns", each [Country Code] <> null and [Country Code] <> ""),
+				  #"Unpivoted years" = Table.Unpivot(#"Filtered rows", {"2010 [YR2010]", "2011 [YR2011]", "2012 [YR2012]", "2013 [YR2013]", "2014 [YR2014]", "2015 [YR2015]", "2016 [YR2016]", "2017 [YR2017]", "2018 [YR2018]", "2019 [YR2019]"}, "Year_Raw", "Population"),
+				  #"Extracted year" = Table.TransformColumns(#"Unpivoted years", {{"Year_Raw", each Text.Start(_, 4), type text}}),
+				  #"Renamed columns" = Table.RenameColumns(#"Extracted year", {{"Year_Raw", "Year"}}),
+				  #"Changed column type" = Table.TransformColumnTypes(#"Renamed columns", {{"Year", Int64.Type}, {"Population", Int64.Type}})
+				in
+				  #"Changed column type"
+
+	annotation PBI_ResultType = Table
+
