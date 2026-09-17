@@ -1,12 +1,12 @@
 # 📊 Latin America & Caribbean Demographic Dynamics (2010 – 2019)
 
-Population analysis pipeline built with **R** and the **Tidyverse**, turning a raw World Bank WDI spreadsheet (`data/population_latin_america.xlsx`, `Data` sheet) into seven charts covering scale, growth, and decline across the region.
+Population analysis pipeline built with **R** and the **Tidyverse**, turning a raw World Bank WDI spreadsheet (`data/population_latin_america.xlsx`, `Data` sheet) into a Power BI dashboard covering scale, growth, and decline across the region.
 
 ## 🔧 How to Use
 ```
 Rscript analysis.R
 ```
-Regenerates every chart in `plots/` from the source spreadsheet. (`generate_missing_plots.py` is a pandas/matplotlib fallback for the two log-scale/net-change charts, for environments without R.)
+Runs the load → tidy pipeline over the source spreadsheet. (`generate_missing_plots.py` is a pandas fallback for environments without R.)
 
 ## 📈 Key Insights
 - By 2019 the tracked region reached **646.4M** people; Brazil (211.1M) and Mexico (127.6M) alone account for more than half of it.
@@ -33,9 +33,9 @@ trend line, population by country, and growth by country.
 ## 📂 Structure
 ```
 data/population_latin_america.xlsx   raw WDI source
-plots/                                generated charts
-analysis.R                            full pipeline: load → tidy → plot
+analysis.R                            full pipeline: load → tidy
 latin_america_population_data.pbip   Power BI project (open in Desktop)
 latin_america_population_data.Report/       PBIR: pages, visuals as JSON
 latin_america_population_data.SemanticModel/ TMDL: tables, measures
+latin_america_population_data.png    static export of the dashboard
 ```
