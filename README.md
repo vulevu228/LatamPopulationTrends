@@ -1,5 +1,7 @@
 # 📊 Latin America & Caribbean Demographic Dynamics (2010 – 2019)
 
+*One of my first data projects (May 2026).*
+
 Population analysis pipeline built with **R** and the **Tidyverse**, turning a raw World Bank WDI spreadsheet (`data/population_latin_america.xlsx`, `Data` sheet) into a Power BI dashboard covering scale, growth, and decline across the region.
 
 ## 🔧 How to Use
